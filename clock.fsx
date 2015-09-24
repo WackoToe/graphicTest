@@ -45,4 +45,8 @@ f.Paint.Add(fun e ->
     drawHour g1 Pens.Red 85. (float hour) (float min) (float sec)  
 )
 
-f.Invalidate()
+// Tento di ridisegnare il form ogni secondo
+while true do(
+    Async.Sleep(1000)
+    f.Invalidate()
+)
