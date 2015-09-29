@@ -1,6 +1,7 @@
 open System.Windows.Forms
 open System.Drawing
-
+//#r @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\PresentationCore.dll"
+//open System.Windows.Media
 
 let f = new Form(Text="Tetris", Width=300, Height=500, TopMost=true)
 f.Show()
@@ -23,17 +24,18 @@ f.Paint.Add(fun e ->
 	let height = f.ClientSize.Height
 	let cx = float32(width/2)
 	let cy = float32(height/2)
+	//let drGroup = new DrawingGroup()
+
 	use whPen = new Pen(Color.White, width = float32(6))
 	use whPen = new Pen(Color.White, float32(6))
 	print_grid g whPen cx cy
 )
 
-f.ResizeEnd.Add(fun e ->
+f.Resize.Add(fun e ->
 	f.Invalidate()
 )
 
-//GESTIRE CLICK MOUSE
 f.MouseClick.Add(fun e ->
 	let x = e.X
-	let y = e.Y  
+	let y = e.Y
 )
