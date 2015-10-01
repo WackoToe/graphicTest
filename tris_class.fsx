@@ -26,26 +26,25 @@ type Grid () as this =
 	member this.DrawCross (g:Graphics) x y =
 		let savedGraph = g.Save()
 		g.TranslateTransform(float32(x*cell_size + cell_size/2), float32(y*cell_size+cell_size/2))
+		g.RotateTransform(45.f)
 		for i = 0 to 4 do
-			g.RotateTransform(45.f)
+			g.RotateTransform(90.f)
 			g.DrawLine(Pens.Black, 0, 0, cell_size/2, 0)
 		g.Restore(savedGraph)
 
 	member this.DrawCircle (g:Graphics) x y =
 		let savedGraph = g.Save()
 		g.TranslateTransform(float32(x*cell_size + cell_size/2), float32(y*cell_size+cell_size/2))
-		g.DrawEllipse(Pens.Black, -cell_size/2, -cell_size/2, cell_size/2, cell_size/2)
+		g.DrawEllipse(Pens.Black, -cell_size/2 + cell_size/20, -cell_size/2 + cell_size/20, cell_size - cell_size/20, cell_size - cell_size/20)
 		g.Restore(savedGraph)
 
 	member this.CrossCircle (g:Graphics) =
 		for i = 0 to 2 do
 			for j = 0 to 2 do
 				if stato_celle.[i, j]=0 then
-					this.DrawCross g i j
-					printfn "RAMO THEN"
+					this.DrawCross g j i
 				else if stato_celle.[i, j]=1 then
-					this.DrawCircle g i j
-					printfn "RAMO ELSE"
+					this.DrawCircle g j i
 
 	override this.OnPaint e =
 		let g = e.Graphics
@@ -71,7 +70,8 @@ type Grid () as this =
 		| y when y<cell_size -> row <-  0
 		| y when y<2*cell_size -> row <- 1
 		| _ -> row <- 2
-
+		stato_celle.[row, column] <- count
+		count <- count+1
 		this.Invalidate()
 
 	override this.OnResize e =
