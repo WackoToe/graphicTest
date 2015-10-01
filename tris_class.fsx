@@ -9,10 +9,21 @@ f.BackgroundImageLayout <- ImageLayout.Tile
 
 f.MinimumSize <- new Size(370, 50)
 
+let set_grid_size (e:UserControl) =
+	let width = f.ClientSize.Width
+	let height = f.ClientSize.Height
+	let cx = width / 2
+	let cy = height / 2
+	(*Divido ora l'area utile in 10 parti, la griglia occuperà 6/10 di area*)
+	let decimo = if width > height then height/10 else width/10
+	e.Width <- decimo * 6
+	e.Height <- decimo * 6
+	e.Location <- Point(cx-(3*decimo), cy-(3*decimo))
 
-type Grid () =
+
+type Grid () as this =
 	inherit UserControl()
-
+	do this.DoubleBuffered <- true
 	//Stato Interno
 	let stato_celle = array2D [ [2; 2; 2]; [2; 2; 2]; [2; 2; 2]]
 	let mutable count = 0
@@ -21,16 +32,10 @@ type Grid () =
 		let g = e.Graphics
 		let savedGraph = g.Save()
 
-		let width = f.ClientSize.Width
-		let height = f.ClientSize.Height
-		let cx = float32(width / 2)
-		let cy = float32(height / 2)
-		g.TranslateTransform(cx, cy)
-
-		let decimo = if width > height then height/10 else width/10
 		let p = new Pen(Color.White, width=6.f)
+		let lenght = this.Width // = this.Height
 		for i = 1 to 4 do
-			g.DrawLine(p, -3*decimo, decimo, 3*decimo, decimo)
+			g.DrawLine(p, 0, lenght/3, lenght, lenght/3)
 			g.RotateTransform(float32(90))
 		g.Restore(savedGraph)
 
@@ -41,10 +46,13 @@ type Grid () =
 		this.Invalidate()
 
 	override this.OnPaintBackground e =
-		()
+		((*Codice vuoto: stampa background trasparente*))
 
-let e = new Grid(Dock=DockStyle.Fill)
+let e = new Grid()
+set_grid_size e
 f.Controls.Add(e)
-f.Resize.Add(fun e ->
+
+f.Resize.Add(fun _ ->
+	set_grid_size e
 	f.Invalidate()
 )
